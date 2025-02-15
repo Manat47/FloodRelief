@@ -10,7 +10,12 @@ const RequestSchema = new mongoose.Schema({
   },
   num_people: Number,
   additional_notes: String,
-  status: { type: String, enum: ["pending", "in_progress", "completed"], default: "pending" },
+  status: { 
+    type: String, 
+    enum: ["pending", "booked", "assigned", "in_progress", "completed"],
+    default: "pending" 
+  },
+  organization_id: { type: mongoose.Schema.Types.ObjectId, ref: "Organization", default: null },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now }
 });

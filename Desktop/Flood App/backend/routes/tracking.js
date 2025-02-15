@@ -29,6 +29,7 @@ router.post("/", async (req, res) => {
 // 📌 1️⃣ API ให้ Victim ดูสถานะของคำขอ
 router.get("/:request_id", async (req, res) => {
   try {
+    console.log("🔎 Request ID:", req.params.request_id);  // เช็กว่ามันได้ค่าอะไรมา
     const tracking = await Tracking.findOne({ request_id: req.params.request_id });
     if (!tracking) return res.status(404).json({ message: "ไม่พบข้อมูลติดตามสถานะ" });
     res.json(tracking);
