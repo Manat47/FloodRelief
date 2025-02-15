@@ -14,4 +14,4 @@ const TrackingSchema = new mongoose.Schema({
   ]
 });
 
-module.exports = mongoose.model("Tracking", TrackingSchema);
+module.exports = mongoose.model("trackings", TrackingSchema);
