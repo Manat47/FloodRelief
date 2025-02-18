@@ -18,7 +18,7 @@ app.use("/api/victims", victimRoutes);
 app.use("/api/requests", requestsRoutes);
 app.use("/api/tracking", trackingRoutes);
 app.use("/api/teams", teamRoutes);
-app.use("/api/organizations", require("./routes/organizations"));
+app.use("/api/organizations", organizationRoutes);
 
 
 const PORT = process.env.PORT || 5000;
