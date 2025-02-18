@@ -1,5 +1,5 @@
 const express = require("express");
-const mongoose = require("mongoose");  // ✅ เพิ่ม mongoose
+const mongoose = require("mongoose");  // เพิ่ม mongoose
 const Victim = require("../models/victim");
 const Request = require("../models/Request"); 
 const router = express.Router();
