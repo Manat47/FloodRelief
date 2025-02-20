@@ -3,7 +3,20 @@ const mongoose = require("mongoose");
 const router = express.Router();
 const Volunteer = require("../models/volunteer");
 
-// ✅ API สมัคร Volunteer
+//  API ดึงข้อมูลโปรไฟล์ของ Volunteer
+router.get("/:id", async (req, res) => {
+    try {
+      const volunteer = await Volunteer.findById(req.params.id);
+      if (!volunteer) {
+        return res.status(404).json({ message: "Volunteer not found" });
+      }
+      res.status(200).json(volunteer);
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  });
+
+//  API สมัคร Volunteer
 router.post("/signup", async (req, res) => {
   try {
     const { name, phone, email, organization_id } = req.body;
@@ -34,5 +47,36 @@ router.post("/signup", async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
+
+// ✅ API อัปเดตข้อมูล Volunteer
+router.put("/:id/update", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { name, phone, email } = req.body;
+  
+      // ตรวจสอบว่า Volunteer มีอยู่หรือไม่
+      const volunteer = await Volunteer.findById(id);
+      if (!volunteer) {
+        return res.status(404).json({ message: "Volunteer not found" });
+      }
+  
+      // ตรวจสอบเบอร์โทรว่าไม่ซ้ำ
+      const existingPhone = await Volunteer.findOne({ phone });
+      if (existingPhone && existingPhone._id.toString() !== id) {
+        return res.status(400).json({ message: "Phone number already in use" });
+      }
+  
+      // อัปเดตข้อมูล
+      volunteer.name = name || volunteer.name;
+      volunteer.phone = phone || volunteer.phone;
+      volunteer.email = email || volunteer.email;
+  
+      await volunteer.save();
+  
+      res.status(200).json({ message: "Profile updated successfully", volunteer });
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  });
 
 module.exports = router;
