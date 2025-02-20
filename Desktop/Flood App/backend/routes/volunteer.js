@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 const Volunteer = require("../models/volunteer");
+const Mission = require("../models/mission");
 
 //  API ดึงข้อมูลโปรไฟล์ของ Volunteer
 router.get("/:id", async (req, res) => {
@@ -11,6 +12,34 @@ router.get("/:id", async (req, res) => {
         return res.status(404).json({ message: "Volunteer not found" });
       }
       res.status(200).json(volunteer);
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  });
+
+  //  API ดึงภารกิจปัจจุบันของ Volunteer
+router.get("/:id/missions", async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      // ค้นหา Volunteer
+      const volunteer = await Volunteer.findById(id);
+      if (!volunteer) {
+        return res.status(404).json({ message: "Volunteer not found" });
+      }
+  
+      // เช็คว่ามีภารกิจปัจจุบันหรือไม่
+      if (!volunteer.current_mission) {
+        return res.status(200).json({ message: "No active mission", mission: null });
+      }
+  
+      // ดึงข้อมูลภารกิจจาก current_mission
+      const mission = await Mission.findById(volunteer.current_mission);
+      if (!mission) {
+        return res.status(404).json({ message: "Mission not found" });
+      }
+  
+      res.status(200).json({ mission });
     } catch (error) {
       res.status(500).json({ message: "Server error", error: error.message });
     }
@@ -78,5 +107,6 @@ router.put("/:id/update", async (req, res) => {
       res.status(500).json({ message: "Server error", error: error.message });
     }
   });
+  
 
 module.exports = router;
