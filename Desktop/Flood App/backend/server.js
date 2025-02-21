@@ -10,6 +10,7 @@ const requestsRoutes = require("./routes/requests");
 const teamRoutes = require("./routes/teams");
 const organizationRoutes = require("./routes/organizations");
 const volunteerRoutes = require("./routes/volunteer");
+const missionRoutes = require("./routes/missions");
 
 const app = express();
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use("/api/tracking", trackingRoutes);
 app.use("/api/teams", teamRoutes);
 app.use("/api/organizations", organizationRoutes);
 app.use("/api/volunteers", volunteerRoutes);
+app.use("/api/missions", missionRoutes);
 
 
 const PORT = process.env.PORT || 5000;
