@@ -113,4 +113,40 @@ router.put("/:id/complete", async (req, res) => {
     }
 });
 
+// ✅ Withdraw from Mission
+router.put("/:id/withdraw", async (req, res) => {
+    try {
+      const { id } = req.params;  // Mission ID
+      const { volunteer_id } = req.body;
+  
+      // Find Mission
+      const mission = await Mission.findById(id);
+      if (!mission) {
+        return res.status(404).json({ message: "Mission not found" });
+      }
+  
+      // Check if Volunteer is part of the mission
+      if (!mission.volunteers.includes(volunteer_id)) {
+        return res.status(400).json({ message: "Volunteer is not part of this mission" });
+      }
+  
+      // Remove volunteer from the mission
+      mission.volunteers = mission.volunteers.filter(v => v.toString() !== volunteer_id);
+  
+      // Update Volunteer: Set current_mission to null
+      await Volunteer.findByIdAndUpdate(volunteer_id, { current_mission: null });
+  
+      // If no volunteers left, reset mission status
+      if (mission.volunteers.length === 0) {
+        mission.status = "pending";  // Mission goes back to the organization
+      }
+  
+      await mission.save();
+  
+      res.status(200).json({ message: "Volunteer withdrawn successfully", mission });
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  });
+  
 module.exports = router;
