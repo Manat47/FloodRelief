@@ -42,4 +42,75 @@ router.post("/:id/accept", async (req, res) => {
     }
 });
 
+router.put("/:id/arrived", async (req, res) => {
+    try {
+        const { id } = req.params; // Mission ID
+        const { volunteer_id } = req.body;
+
+        // Find the mission
+        const mission = await Mission.findById(id);
+        if (!mission) {
+            return res.status(404).json({ message: "Mission not found" });
+        }
+
+        // Check if volunteer is in the mission
+        if (!mission.volunteers.includes(volunteer_id)) {
+            return res.status(400).json({ message: "Volunteer not assigned to this mission" });
+        }
+
+        // Update mission status
+        mission.status = "arrived";
+        await mission.save();
+
+        // Notify victim & organization (Future implementation)
+
+        res.status(200).json({
+            message: "Volunteer has arrived",
+            mission: {
+                _id: mission._id,
+                status: mission.status
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+
+router.put("/:id/complete", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { volunteer_id } = req.body;
+
+        // Find mission
+        const mission = await Mission.findById(id);
+        if (!mission) {
+            return res.status(404).json({ message: "Mission not found" });
+        }
+
+        // Check if volunteer is part of this mission
+        if (!mission.volunteers.includes(volunteer_id)) {
+            return res.status(403).json({ message: "Volunteer not assigned to this mission" });
+        }
+
+        // Update mission status
+        mission.status = "completed";
+        mission.end_time = new Date();
+
+        await mission.save();
+
+        // Update volunteer stats
+        const volunteer = await Volunteer.findById(volunteer_id);
+        if (volunteer) {
+            volunteer.missions_completed += 1;
+            volunteer.current_mission = null;
+            await volunteer.save();
+        }
+
+        res.status(200).json({ message: "Mission completed successfully", mission, volunteer });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+
 module.exports = router;
