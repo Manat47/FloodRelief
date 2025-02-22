@@ -11,6 +11,7 @@ const teamRoutes = require("./routes/teams");
 const organizationRoutes = require("./routes/organizations");
 const volunteerRoutes = require("./routes/volunteer");
 const missionRoutes = require("./routes/missions");
+const adminRoutes = require("./routes/admin");
 
 const app = express();
 app.use(express.json());
@@ -23,6 +24,7 @@ app.use("/api/teams", teamRoutes);
 app.use("/api/organizations", organizationRoutes);
 app.use("/api/volunteers", volunteerRoutes);
 app.use("/api/missions", missionRoutes);
+app.use("/admin", adminRoutes);
 
 
 const PORT = process.env.PORT || 5000;
