@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import CheckBox from "expo-checkbox";
+import { router } from "expo-router";
  
 
 export default function loginOrganize() {
@@ -46,7 +47,7 @@ export default function loginOrganize() {
       </View>
 
       {/* Login Button */}
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity onPress={()=> router.push('/organize/(taps)/home')} style={styles.button}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
