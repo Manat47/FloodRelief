@@ -1,16 +1,30 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Request = require("../models/Request");
+const Organization = require("../models/Organization");
 const router = express.Router();
 
 // POST /requests → ให้ผู้ใช้ส่งคำขอช่วยเหลือ
 router.post("/", async (req, res) => {
   try {
-    const request = new Request(req.body);
-    await request.save();
-    res.status(201).json(request);
+      const { victim_id, requested_items, num_people, additional_notes, location } = req.body;
+
+      const newRequest = new Request({
+          victim_id,
+          requested_items,
+          num_people,
+          additional_notes,
+          location,
+          status: "pending",  // ค่าเริ่มต้น
+          created_at: Date.now(),
+          updated_at: Date.now()
+      });
+
+      await newRequest.save();
+
+      res.status(201).json(newRequest);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message });
   }
 });
 
@@ -119,6 +133,33 @@ router.put("/:id/status", async (req, res) => {
       }
 
       res.json({ message: "Request status updated successfully", request });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+});
+
+router.put("/:id/assign", async (req, res) => {
+  try {
+      const { organization_id } = req.body;
+      
+      // ตรวจสอบว่า Organization มีอยู่จริงไหม
+      const organization = await Organization.findById(organization_id);
+      if (!organization) {
+          return res.status(400).json({ message: "Organization not found" });
+      }
+
+      // อัปเดต request ให้มี organization_id และเปลี่ยนสถานะเป็น "assigned"
+      const request = await Request.findByIdAndUpdate(
+          req.params.id,
+          { organization_id, status: "assigned", updated_at: Date.now() },
+          { new: true }
+      );
+
+      if (!request) {
+          return res.status(404).json({ message: "Request not found" });
+      }
+
+      res.json({ message: "Request assigned successfully", request });
   } catch (error) {
       res.status(500).json({ error: error.message });
   }

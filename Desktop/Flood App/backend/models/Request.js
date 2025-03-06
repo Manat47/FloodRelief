@@ -10,6 +10,11 @@ const RequestSchema = new mongoose.Schema({
   },
   num_people: Number,
   additional_notes: String,
+  location: {
+    latitude: Number,
+    longitude: Number,
+    address: String
+  },
   status: { 
     type: String, 
     enum: ["pending", "booked", "assigned", "in_progress", "completed"],
