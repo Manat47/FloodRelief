@@ -113,7 +113,7 @@ router.put("/:id/complete", async (req, res) => {
     }
 });
 
-// ✅ Withdraw from Mission
+// Withdraw from Mission
 router.put("/:id/withdraw", async (req, res) => {
     try {
       const { id } = req.params;  // Mission ID

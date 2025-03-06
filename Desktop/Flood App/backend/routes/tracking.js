@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const Tracking = require("../models/Tracking");
 const router = express.Router();
 
-// 📌 3️⃣ POST /tracking → สร้างข้อมูลติดตามครั้งแรก
+// 3️ POST /tracking → สร้างข้อมูลติดตามครั้งแรก
 router.post("/", async (req, res) => {
     try {
       console.log("📌 Creating new tracking record:", req.body);  // Debug log
@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
     }
   });
 
-// 📌 1️⃣ API ให้ Victim ดูสถานะของคำขอ
+// 1️ API ให้ Victim ดูสถานะของคำขอ
 router.get("/:request_id", async (req, res) => {
   try {
     console.log("🔎 Request ID:", req.params.request_id);  // เช็กว่ามันได้ค่าอะไรมา
@@ -38,7 +38,7 @@ router.get("/:request_id", async (req, res) => {
   }
 });
 
-// 📌 2️⃣ POST /tracking/update → อัปเดตสถานะของคำขอ
+// 2️ POST /tracking/update → อัปเดตสถานะของคำขอ
 router.post("/update", async (req, res) => {
     try {
       console.log("📌 Received data:", req.body);  // เพิ่ม log ดูค่าที่ได้รับ

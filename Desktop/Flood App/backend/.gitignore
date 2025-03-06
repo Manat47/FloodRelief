@@ -1,5 +1,5 @@
 node_modules/ 
-.env 
+.env
 # Ignore system files and environment settings
 .anaconda/
 .arduinoIDE/
